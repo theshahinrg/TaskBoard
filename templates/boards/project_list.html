@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex-between card">
+    <div>
+        <h1>My Projects</h1>
+        <p class="muted">Projects you own or collaborate on.</p>
+    </div>
+    <a class="btn" href="{% url 'boards:project-create' %}">New Project</a>
+</div>
+{% if projects %}
+    <div class="grid">
+        {% for project in projects %}
+            <div class="card">
+                <div class="flex-between">
+                    <div>
+                        <h3 style="margin: 0 0 6px 0;">{{ project.name }}</h3>
+                        <div class="muted">Created {{ project.created_at|date:"Y-m-d" }} · Owner: {{ project.owner.username }}</div>
+                    </div>
+                    <a class="btn secondary" href="{% url 'boards:project-detail' project.pk %}">Open</a>
+                </div>
+                <p class="muted" style="margin-top: 10px;">{{ project.description|default:"No description" }}</p>
+                {% if project.owner_id == user.id %}
+                    <div style="margin-top: 10px;">
+                        <a class="btn secondary" href="{% url 'boards:project-update' project.pk %}">Edit</a>
+                        <a class="btn danger" href="{% url 'boards:project-delete' project.pk %}">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="muted">You do not have access to any projects yet.</p>
+{% endif %}
+{% endblock %}

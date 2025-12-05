@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Update Status for "{{ object.title }}"</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <label for="{{ form.status.id_for_label }}">Status</label>
+            {{ form.status }}
+            {% for error in form.status.errors %}<div class="badge danger">{{ error }}</div>{% endfor %}
+        </div>
+        <button class="btn" type="submit">Save</button>
+        <a class="btn secondary" href="{% url 'boards:project-detail' object.project.pk %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

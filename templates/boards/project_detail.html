@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="flex-between">
+        <div>
+            <h1 style="margin: 0 0 6px 0;">{{ project.name }}</h1>
+            <p class="muted" style="margin: 0;">{{ project.description }}</p>
+            <div class="muted" style="margin-top: 6px;">Owner: {{ project.owner.username }}</div>
+        </div>
+        <div>
+            {% if is_owner %}
+                <a class="btn secondary" href="{% url 'boards:project-update' project.pk %}">Edit Project</a>
+                <a class="btn danger" href="{% url 'boards:project-delete' project.pk %}">Delete Project</a>
+            {% endif %}
+            <a class="btn" href="{% url 'boards:task-create' project.pk %}">Add Task</a>
+        </div>
+    </div>
+</div>
+
+<div class="board-grid">
+    {% for status, label, tasks in status_columns %}
+        <div class="card">
+            <div class="flex-between" style="margin-bottom: 8px;">
+                <strong>{{ label }}</strong>
+            </div>
+            {% if tasks %}
+                {% for task in tasks %}
+                    <div class="task-card" style="margin-bottom: 10px;">
+                        <div class="flex-between">
+                            <h4 style="margin: 0;">{{ task.title }}</h4>
+                            <div>
+                                <a class="btn secondary" href="{% url 'boards:task-update' task.pk %}">Edit</a>
+                                <a class="btn secondary" href="{% url 'boards:task-status' task.pk %}">Status</a>
+                                <a class="btn danger" href="{% url 'boards:task-delete' task.pk %}">Delete</a>
+                            </div>
+                        </div>
+                        <p class="muted" style="margin: 8px 0;">{{ task.description|truncatewords:20 }}</p>
+                        <div class="task-meta">
+                            Priority: {{ task.get_priority_display }} ·
+                            Assignee: {{ task.assignee|default:"Unassigned" }} ·
+                            Deadline: {{ task.deadline|default:"None" }}
+                            {% if task.is_overdue %}
+                                <span class="badge danger">Overdue</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="muted">No tasks in this column.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

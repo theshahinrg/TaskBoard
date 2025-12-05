@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2 style="margin-top: 0;">{{ action }} Task for "{{ project.name }}"</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="form-row">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="muted" style="font-size: 13px;">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="badge danger">{{ error }}</div>{% endfor %}
+            </div>
+        {% endfor %}
+        <button class="btn" type="submit">Save</button>
+        <a class="btn secondary" href="{% url 'boards:project-detail' project.pk %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}
